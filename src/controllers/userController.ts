@@ -7,17 +7,68 @@ const userService = new UserService(userRepository);
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const user = await userService.register(req.body);
-    res.status(201).json({ email: user.email, password: user.password });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    const user = await userService.registerService(req.body);
+    res.status(201).json({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      role: user.role,
+    });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 };
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await userService.getAllUsers();
+    const users = await userService.getAllUsersService();
+    if (users.length === 0) {
+      res.status(404).json({ message: "No users found" });
+      return;
+    }
     res.status(200).json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserByEmail = async (req: Request, res: Response) => {
+  try {
+    const email = req.params.email;
+    const user = await userService.getUserByEmailService(email);
+    if (!user) {
+      res.status(404).json({ message: "User not found!" });
+      return;
+    }
+    res.status(200).json({ user });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updatedUser = await userService.updateUserService(id, req.body);
+    if (!updatedUser) {
+      res.status(404).json({ message: "User not found!" });
+      return;
+    }
+    res.status(200).json({ message: "User Updated", updatedUser });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deleteUser = await userService.deleteUserService(id);
+    if (!deleteUser) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    res.status(200).json({ message: "User deleted", deleteUser });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
