@@ -1,6 +1,8 @@
 import { IUserRepository } from "../repository/interfaces/IUserRepository";
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
+import { comparePassword } from "../utils/password";
+import { generateRefreshToken, generateToken } from "../utils/token";
 
 interface CreateUserDTO {
   name: string;
@@ -40,6 +42,37 @@ export class UserService {
       role: data.role,
     };
     return this.userRepository.create(newUser);
+  }
+
+  async loginService(
+    email: string,
+    password: string
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const loginUser = await this.userRepository.findByEmail(email);
+
+    if (!loginUser) throw new Error("user does not exists");
+
+    const isMatch = await comparePassword(password, loginUser.password);
+
+    if (!isMatch) {
+      throw new Error("invalid email or password!");
+    }
+    if (!loginUser.id || !loginUser.email || !loginUser.role) {
+      throw new Error("User data is incomplete");
+    }
+
+    const accessToken = generateToken({
+      id: loginUser.id,
+      email: loginUser.email,
+      role: loginUser.role,
+    });
+    const refreshToken = generateRefreshToken({
+      id: loginUser.id,
+      email: loginUser.email,
+      role: loginUser.role,
+    });
+
+    return { accessToken, refreshToken };
   }
 
   async updateUserService(

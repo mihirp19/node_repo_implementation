@@ -32,4 +32,20 @@ export class ProductRepository implements IProductRepository {
     await delProduct.destroy();
     return delProduct.toJSON();
   }
+  // Decrease Product stock
+  async decreaseStock(id: string, quantity: number): Promise<Product | null> {
+    const product = await ProductModel.findByPk(id);
+    if (!product || product.stock < quantity) return null;
+    product.stock -= quantity;
+    await product.save();
+    return product.toJSON() as Product;
+  }
+  // Increase Product stock
+  async increaseStock(id: string, quantity: number): Promise<Product | null> {
+    const product = await ProductModel.findByPk(id);
+    if (!product) return null;
+    product.stock += quantity;
+    await product.save();
+    return product.toJSON() as Product;
+  }
 }

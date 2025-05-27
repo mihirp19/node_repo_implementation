@@ -6,4 +6,6 @@ export interface IProductRepository {
   findOne(id: string): Promise<Product | null>;
   update(id: string, product: Partial<Product>): Promise<Product | null>;
   delete(id: string): Promise<Product | null>;
+  increaseStock(id: string, quantity: number): Promise<Product | null>;
+  decreaseStock(id: string, quantity: number): Promise<Product | null>;
 }

@@ -19,6 +19,23 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      res.status(400).json({ error: "email and password are required" });
+      return;
+    }
+    const { accessToken, refreshToken } = await userService.loginService(
+      email,
+      password
+    );
+    res.status(200).json({ accessToken, refreshToken });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const users = await userService.getAllUsersService();

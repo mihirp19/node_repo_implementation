@@ -1,5 +1,6 @@
 import app from "./server";
 import { sequelize } from "./config/db";
+import { associateModels } from "./models/associations";
 
 const PORT = process.env.PORT || 3000;
 
@@ -8,7 +9,10 @@ async function startServer() {
     await sequelize.authenticate();
     console.log("database connected successfully");
 
+    associateModels();
+
     await sequelize.sync({ alter: true });
+
     console.log("database synced");
 
     app.listen(PORT, () => {

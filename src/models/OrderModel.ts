@@ -34,7 +34,7 @@ OrderModel.init(
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: "user2",
+        model: "users2",
         key: "id",
       },
     },

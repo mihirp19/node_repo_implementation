@@ -67,3 +67,37 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+export const decreaseProductStock = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const decreaseStock = await productService.decreaseProductStockService(
+      id,
+      quantity
+    );
+    if (!decreaseStock) {
+      res.status(404).json({ message: "Out of stock or product not found" });
+    }
+    res.status(200).json({ message: "Product stock decreased" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const increaseProductStock = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const increaseStock = await productService.increaseProductStockService(
+      id,
+      quantity
+    );
+    if (!increaseStock) {
+      res.status(404).json({ message: "Product not found" });
+    }
+    res.status(200).json({ message: "Product stock increased" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};

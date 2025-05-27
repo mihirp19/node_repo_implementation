@@ -45,4 +45,16 @@ export class ProductService {
   async deleteProduct(id: string): Promise<Product | null> {
     return this.productRepository.delete(id);
   }
+  async decreaseProductStockService(
+    id: string,
+    quantity: number
+  ): Promise<Product | null> {
+    return this.productRepository.decreaseStock(id, quantity);
+  }
+  async increaseProductStockService(
+    id: string,
+    quantity: number
+  ): Promise<Product | null> {
+    return this.productRepository.increaseStock(id, quantity);
+  }
 }
