@@ -1,13 +1,10 @@
+import { Order } from "../entities/Order";
 import { IOrderRepository } from "./interfaces/IOrderRepository";
 import { OrderModel } from "../models/OrderModel";
-import { Order } from "../entities/Order";
 
 export class OrderRepository implements IOrderRepository {
   async create(orderData: Order): Promise<Order> {
     const order = await OrderModel.create(orderData);
-    if (!order) {
-      throw new Error("Failed to create order");
-    }
     return order.toJSON() as Order;
   }
 
@@ -26,6 +23,19 @@ export class OrderRepository implements IOrderRepository {
     if (!order) return null;
     order.status = status as any;
     await order.save();
+    return order.toJSON() as Order;
+  }
+
+  async updateTotalAmount(
+    id: string,
+    totalAmount: number
+  ): Promise<Order | null> {
+    const order = await OrderModel.findByPk(id);
+    if (!order) return null;
+
+    order.totalAmount = totalAmount as any;
+    await order.save();
+
     return order.toJSON() as Order;
   }
 }

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addProduct,
   deleteProduct,
+  getProductByFilter,
   getProductById,
   getProducts,
   increaseProductStock,
@@ -17,6 +18,7 @@ import authMiddleware from "../middleware/authMiddleware";
 
 const productRouter = Router();
 
+productRouter.get("/filter", getProductByFilter);
 productRouter.get("/", getProducts);
 productRouter.get("/:id", getProductById);
 productRouter.post(

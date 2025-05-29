@@ -5,4 +5,5 @@ export interface IOrderRepository {
   findById(id: string): Promise<Order | null>;
   findAll(): Promise<Order[]>;
   update(id: string, status: string): Promise<Order | null>;
+  updateTotalAmount(id: string, totalAmount: number): Promise<Order | null>;
 }

@@ -5,6 +5,7 @@ import { ProductRepository } from "../repository/productRepository";
 const productRepository = new ProductRepository();
 const productService = new ProductService(productRepository);
 
+// Add Product Controller
 export const addProduct = async (req: Request, res: Response) => {
   try {
     const product = await productService.addProduct(req.body);
@@ -15,7 +16,7 @@ export const addProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Get Product Controller
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const products = await productService.getAllProductsService();
@@ -27,7 +28,23 @@ export const getProducts = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Filter Product Controller
+export const getProductByFilter = async (req: Request, res: Response) => {
+  try {
+    const { title, category } = req.body;
+    const filteredResults = await productService.getProductsByFilterService({
+      title,
+      category,
+    });
+    if (!filteredResults || filteredResults.length === 0) {
+      res.status(404).json({ message: "No products match the search" });
+    }
+    res.status(200).json({ filteredResults });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
+// Get Product By Id Controller
 export const getProductById = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
@@ -41,7 +58,7 @@ export const getProductById = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Update Product Controller
 export const updateProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -54,7 +71,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Delete Product Controller
 export const deleteProduct = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -67,7 +84,7 @@ export const deleteProduct = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Decrease Product Stock Controller
 export const decreaseProductStock = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -84,7 +101,7 @@ export const decreaseProductStock = async (req: Request, res: Response) => {
     res.status(500).json({ error: error.message });
   }
 };
-
+// Increase Product Stock Controller
 export const increaseProductStock = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;

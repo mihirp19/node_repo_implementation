@@ -7,7 +7,16 @@ export class ItemService {
     private itemRepository: IItemRepository,
     private productRepository: IProductRepository
   ) {}
-
+  // get items pending
+  async getItemService(): Promise<Item[]> {
+    const items = await this.itemRepository.findAll();
+    return items;
+  }
+  async getItemByIdService(id: string): Promise<Item | null> {
+    const item = await this.itemRepository.findById(id);
+    if (!item) return null;
+    return item;
+  }
   async createItemService(itemData: {
     orderId: string;
     productId: string;
@@ -27,7 +36,7 @@ export class ItemService {
     await this.productRepository.decreaseStock(productId, quantity);
 
     const price = product.price;
-    const totalPrice = price * quantity;
+    const totalPrice = parseFloat((price * quantity).toFixed(2));
 
     const item = await this.itemRepository.create({
       orderId,

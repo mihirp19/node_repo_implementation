@@ -1,6 +1,7 @@
 import { IProductRepository } from "./interfaces/IProductRepository";
 import { Product } from "../entities/Product";
 import { ProductModel } from "../models/ProductModel";
+import { Op } from "sequelize";
 
 export class ProductRepository implements IProductRepository {
   // Create Product
@@ -17,6 +18,19 @@ export class ProductRepository implements IProductRepository {
   async findOne(id: string): Promise<Product | null> {
     const product = await ProductModel.findOne({ where: { id } });
     return product ? (product.toJSON() as Product) : null;
+  }
+  // Search Product
+  async productSearch(product: Partial<Product>): Promise<Product[]> {
+    const whereClause: any = {};
+
+    if (product.title) {
+      whereClause.title = { [Op.iLike]: `%${product.title}%` };
+    }
+    if (product.category) {
+      whereClause.category = { [Op.iLike]: `%${product.category}%` };
+    }
+
+    return await ProductModel.findAll({ where: whereClause });
   }
   // Update Product
   async update(id: string, product: Partial<Product>): Promise<Product | null> {

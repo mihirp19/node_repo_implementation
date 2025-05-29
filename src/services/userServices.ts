@@ -3,6 +3,7 @@ import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import { comparePassword } from "../utils/password";
 import { generateRefreshToken, generateToken } from "../utils/token";
+import { IRefreshTokenRepository } from "../repository/interfaces/IRefreshTokenRepository";
 
 interface CreateUserDTO {
   name: string;
@@ -19,7 +20,10 @@ interface UpdateUserDTO {
 }
 
 export class UserService {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private refreshTokenRepository: IRefreshTokenRepository
+  ) {}
 
   async getAllUsersService(): Promise<User[]> {
     return this.userRepository.findAll();
@@ -71,6 +75,21 @@ export class UserService {
       email: loginUser.email,
       role: loginUser.role,
     });
+
+    const existingToken = await this.refreshTokenRepository.findByUserId(
+      loginUser.id
+    );
+
+    if (existingToken && existingToken.id) {
+      await this.refreshTokenRepository.update(existingToken.id, {
+        token: refreshToken,
+      });
+    } else {
+      await this.refreshTokenRepository.create({
+        token: refreshToken,
+        userId: loginUser.id,
+      });
+    }
 
     return { accessToken, refreshToken };
   }

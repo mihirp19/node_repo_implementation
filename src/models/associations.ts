@@ -2,6 +2,7 @@ import { ProductModel } from "./ProductModel";
 import { ItemModel } from "./ItemModel";
 import { UserModel } from "./UserModel";
 import { OrderModel } from "./OrderModel";
+import { RefreshTokenModel } from "./RefreshTokenModel";
 
 export const associateModels = () => {
   UserModel.hasMany(OrderModel, { foreignKey: "userId" });
@@ -12,4 +13,6 @@ export const associateModels = () => {
 
   ProductModel.hasMany(ItemModel, { foreignKey: "productId" });
   ItemModel.belongsTo(ProductModel, { foreignKey: "productId" });
+
+  RefreshTokenModel.belongsTo(UserModel, { foreignKey: "userId" });
 };

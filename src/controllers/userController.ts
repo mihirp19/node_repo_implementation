@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { UserService } from "../services/userServices";
 import { UserRepository } from "../repository/userRepository";
+import { RefreshTokenRepository } from "../repository/refreshTokenRepository";
 
 const userRepository = new UserRepository();
-const userService = new UserService(userRepository);
+const refreshTokenRepository = new RefreshTokenRepository();
+const userService = new UserService(userRepository, refreshTokenRepository);
 
 export const registerUser = async (req: Request, res: Response) => {
   try {

@@ -15,6 +15,7 @@ import {
 } from "../schemas/userSchema";
 import { checkRole } from "../middleware/checkRole";
 import authMiddleware from "../middleware/authMiddleware";
+import { createRefreshToken } from "../controllers/refreshTokenController";
 
 const userRouter = Router();
 userRouter.get("/", getUsers);
@@ -27,6 +28,7 @@ userRouter.post(
   registerUser
 );
 userRouter.post("/login", validate(loginSchema), loginUser);
+userRouter.post("/auth/refresh-token", createRefreshToken);
 userRouter.put(
   "/:id",
   authMiddleware,

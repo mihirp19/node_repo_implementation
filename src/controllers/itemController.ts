@@ -7,6 +7,25 @@ const itemRepository = new ItemRepository();
 const productRepository = new ProductRepository();
 const itemService = new ItemService(itemRepository, productRepository);
 
+export const getItems = async (req: Request, res: Response) => {
+  const items = await itemService.getItemService();
+  if (!items) {
+    res.status(404).json({ message: "Items not found" });
+  }
+  res.status(200).json({ items });
+};
+export const getItemById = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const item = await itemService.getItemByIdService(id);
+    if (!item) {
+      res.status(404).json({ message: "Item not found" });
+    }
+    res.status(200).json({ item });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
 export const addItem = async (req: Request, res: Response) => {
   try {
     const { orderId, productId, quantity } = req.body;

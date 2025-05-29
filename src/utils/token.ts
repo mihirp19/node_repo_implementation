@@ -12,7 +12,7 @@ export function generateToken(payload: {
   if (!payload.id || !payload.email || !payload.role) {
     throw new Error("Missing required fields");
   }
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "10m" });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
 }
 
 // Generate Refresh Token

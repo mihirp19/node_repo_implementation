@@ -1,22 +1,27 @@
-// controllers/orderController.ts
-
 import { Request, Response } from "express";
 import { OrderService } from "../services/orderService";
 import { OrderRepository } from "../repository/orderRepository";
+import { ItemService } from "../services/itemService";
+import { ItemRepository } from "../repository/itemRepository";
+import { ProductRepository } from "../repository/productRepository";
 
 const orderRepository = new OrderRepository();
-const orderService = new OrderService(orderRepository);
+const productRepository = new ProductRepository();
+const itemRepository = new ItemRepository();
+
+const itemService = new ItemService(itemRepository, productRepository);
+const orderService = new OrderService(orderRepository, itemService);
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const { userId, totalAmount } = req.body;
+    const { userId, items } = req.body;
     const order = await orderService.createOrder({
       userId,
-      totalAmount,
-      status: "pending",
+      items,
     });
     res.status(201).json(order);
   } catch (err: any) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -29,7 +34,6 @@ export const getAllOrders = async (_req: Request, res: Response) => {
 export const updateOrderStatus = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { status } = req.body;
-  console.log(req.body);
   try {
     const updated = await orderService.update(id, status);
     res.status(200).json(updated);
