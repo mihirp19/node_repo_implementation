@@ -6,7 +6,17 @@ export interface IProductRepository {
   findOne(id: string): Promise<Product | null>;
   update(id: string, product: Partial<Product>): Promise<Product | null>;
   delete(id: string): Promise<Product | null>;
-  productSearch(product: Partial<Product>): Promise<Product[]>;
+  productSearch(
+    search: string,
+    sortBy: string,
+    sortOrder: "ASC" | "DESC",
+    page: number,
+    limit: number,
+    category: string[],
+    price: { lte: number; gte: number },
+    date: { lte: Date | string; gte: Date | string }
+  ): Promise<{ products: Product[]; count: number }>;
+  categoryCount(): Promise<{ title: string; count: number }[]>;
   increaseStock(id: string, quantity: number): Promise<Product | null>;
   decreaseStock(id: string, quantity: number): Promise<Product | null>;
 }
