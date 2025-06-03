@@ -1,6 +1,6 @@
 {
   "name": "package.json",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "modular project practice using repositories",
   "main": "index.js",
